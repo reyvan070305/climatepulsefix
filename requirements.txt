@@ -1,8 +1,8 @@
 streamlit
-torch
 transformers
-pandas
+torch
+faster-whisper
 geopy
+pandas
 altair
 pydeck
-emoji
