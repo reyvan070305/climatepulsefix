@@ -9,23 +9,23 @@ from geopy.geocoders import Nominatim
 from datetime import datetime
 import os
 import tempfile
-from faster_whisper import WhisperModel
 
-# === Setup Halaman ===
+
+
 st.set_page_config(page_title="ClimatePulse", layout="wide")
 
-# === Load Model & Pipeline ===
+
 device = 0 if torch.cuda.is_available() else -1
 
-# Sentimen
+
 sent_tokenizer = AutoTokenizer.from_pretrained("mdhugol/indonesia-bert-sentiment-classification")
 sent_model = AutoModelForSequenceClassification.from_pretrained("mdhugol/indonesia-bert-sentiment-classification")
 pipe_sent = pipeline("sentiment-analysis", model=sent_model, tokenizer=sent_tokenizer)
 
-# Emosi
+
 pipe_emo = pipeline("sentiment-analysis", model="azizp128/prediksi-emosi-indobert", device=device)
 
-# NER
+
 ner_tokenizer = AutoTokenizer.from_pretrained("cahya/bert-base-indonesian-NER")
 ner_model = AutoModelForTokenClassification.from_pretrained("cahya/bert-base-indonesian-NER")
 pipe_ner = pipeline("ner", model=ner_model, tokenizer=ner_tokenizer, aggregation_strategy="simple")
@@ -83,7 +83,7 @@ h1, h2, h3, h4, h5 {
 
 st.markdown(page_bg, unsafe_allow_html=True)
 
-# === Judul Halaman dengan Logo dan Judul di Baris Sama ===
+
 import base64
 
 with open("logo.png", "rb") as f:
@@ -109,7 +109,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 
-# === Input Teks atau Audio ===
+
 st.markdown("### 💬 Input Teks")
 text_input = ""
 submit = False
@@ -122,7 +122,7 @@ with st.form(key="input_form"):
 if submit_text:
     submit = True
 
-    # === Rekomendasi Kalimat Input ===
+
 st.markdown("### 🧠 Contoh Kalimat untuk Dicoba")
 st.markdown("""
 <ul style='line-height: 1.6; font-size: 1rem;'>
@@ -135,13 +135,7 @@ st.markdown("""
 </ul>
 """, unsafe_allow_html=True)
 
-# === Analisis dan Visualisasi Tetap ===
-# (Kode analisis dan visualisasi tetap berjalan seperti sebelumnya menggunakan text_input dan submit)
 
-# === Tidak ditampilkan ulang agar tidak duplikasi ===
-
-
-# === Proses Analisis Tunggal ===
 if submit and text_input.strip():
     with st.spinner("Menganalisis opini publik..."):
         sent = pipe_sent(text_input)[0]
@@ -151,10 +145,10 @@ if submit and text_input.strip():
         ents = [e['word'] for e in ner]
 
         lokasi_kunci = [
-    # === Wilayah Umum / Pulau ===
+
     "sumatera", "jawa", "kalimantan", "sulawesi", "papua", "maluku", "nusa tenggara", "kepulauan seribu",
 
-    # === Nama Provinsi Lengkap (38) ===
+  
     "aceh", "sumatera utara", "sumatera barat", "riau", "kepulauan riau", "jambi", "bengkulu",
     "sumatera selatan", "bangka belitung", "lampung",
     "banten", "dki jakarta", "jawa barat", "jawa tengah", "daerah istimewa yogyakarta", "jawa timur",
@@ -164,7 +158,7 @@ if submit and text_input.strip():
     "maluku", "maluku utara",
     "papua", "papua barat", "papua selatan", "papua tengah", "papua pegunungan", "papua barat daya",
 
-    # === Ibu Kota Provinsi ===
+
     "banda aceh", "medan", "padang", "pekanbaru", "tanjungpinang", "jambi", "bengkulu",
     "palembang", "pangkalpinang", "bandar lampung",
     "serang", "jakarta", "bandung", "semarang", "yogyakarta", "surabaya",
@@ -174,7 +168,6 @@ if submit and text_input.strip():
     "ambon", "ternate",
     "jayapura", "manokwari", "merauke", "nabire", "wamena", "fakfak", "sorong", "timika",
 
-    # === Kota/Kabupaten Besar atau Strategis ===
     "bekasi", "bogor", "depok", "tangerang", "cirebon", "tegal", "purwokerto", "solo", "magelang",
     "malang", "kediri", "sidoarjo", "pasuruan", "probolinggo", "lumajang", "blitar", "jember",
     "banyuwangi", "cilacap", "padangsidimpuan", "binjai", "sibolga", "lubuklinggau", "palopo",
@@ -239,7 +232,7 @@ if submit and text_input.strip():
     "Kecewa": "😞",
     "Netral": "😐"
 }
-    # === Tampilkan Hasil ===
+
     
     st.markdown(f"""
 <div style='background-color: #1f2937; padding: 1rem; border-radius: 10px;'>
@@ -251,14 +244,14 @@ if submit and text_input.strip():
 </div>
 """, unsafe_allow_html=True)
 
-   # === Tambahan: Peta Opini Publik berdasarkan Log ===
+   
 if os.path.exists("log_tren.csv"):
     df_log = pd.read_csv("log_tren.csv")
     lokasi_kunci = [
-    # === Wilayah Umum / Pulau ===
+
     "sumatera", "jawa", "kalimantan", "sulawesi", "papua", "maluku", "nusa tenggara", "kepulauan seribu",
 
-    # === Nama Provinsi Lengkap (38) ===
+
     "aceh", "sumatera utara", "sumatera barat", "riau", "kepulauan riau", "jambi", "bengkulu",
     "sumatera selatan", "bangka belitung", "lampung",
     "banten", "dki jakarta", "jawa barat", "jawa tengah", "daerah istimewa yogyakarta", "jawa timur",
@@ -268,7 +261,6 @@ if os.path.exists("log_tren.csv"):
     "maluku", "maluku utara",
     "papua", "papua barat", "papua selatan", "papua tengah", "papua pegunungan", "papua barat daya",
 
-    # === Ibu Kota Provinsi ===
     "banda aceh", "medan", "padang", "pekanbaru", "tanjungpinang", "jambi", "bengkulu",
     "palembang", "pangkalpinang", "bandar lampung",
     "serang", "jakarta", "bandung", "semarang", "yogyakarta", "surabaya",
@@ -278,19 +270,19 @@ if os.path.exists("log_tren.csv"):
     "ambon", "ternate",
     "jayapura", "manokwari", "merauke", "nabire", "wamena", "fakfak", "sorong", "timika",
 
-    # === Kota/Kabupaten Besar atau Strategis ===
+
     "bekasi", "bogor", "depok", "tangerang", "cirebon", "tegal", "purwokerto", "solo", "magelang",
     "malang", "kediri", "sidoarjo", "pasuruan", "probolinggo", "lumajang", "blitar", "jember",
     "banyuwangi", "cilacap", "padangsidimpuan", "binjai", "sibolga", "lubuklinggau", "palopo",
     "parepare", "bitung", "tomohon", "kotamobagu", "kotabaru", "pangkalan bun", "ketapang",
     "palu", "baubau", "karangasem", "buleleng", "labuan bajo", "ende", "bima", "dompu",
 
-    # === Lokasi Baru / Khusus / Otorita ===
-    "nusantara",  # Ibu kota negara baru di Kaltim
+
+    "nusantara", 
     "penajam paser utara", "balikpapan", "samarinda", "bontang",  # Kaltim area
     "kepri", "ntb", "ntt", "kaltim", "kalteng", "kalsel", "kalbar", "kaltara",  # singkatan populer
 
-    # === Lokasi Adat/Kultural (yang sering disebut) ===
+    
     "minangkabau", "batak", "dayak", "asmat", "ambon", "bugis", "toraja", "sunda", "madura", "tapanuli"
 ]
     lokasi_counter = {}
@@ -351,7 +343,7 @@ if os.path.exists("log_tren.csv"):
         ).properties(width=600)
         st.altair_chart(chart, use_container_width=True)
 
-# === Upload CSV untuk Analisis Massal ===
+
 st.markdown("---")
 st.markdown("### 📥 Analisis CSV Massal")
 uploaded_file = st.file_uploader("Upload file CSV berisi kolom 'text'", type=["csv"])
@@ -365,10 +357,10 @@ if uploaded_file is not None:
         geo_locs = []
         log_rows = []
         lokasi_kunci = [
-    # === Wilayah Umum / Pulau ===
+
     "sumatera", "jawa", "kalimantan", "sulawesi", "papua", "maluku", "nusa tenggara", "kepulauan seribu",
 
-    # === Nama Provinsi Lengkap (38) ===
+
     "aceh", "sumatera utara", "sumatera barat", "riau", "kepulauan riau", "jambi", "bengkulu",
     "sumatera selatan", "bangka belitung", "lampung",
     "banten", "dki jakarta", "jawa barat", "jawa tengah", "daerah istimewa yogyakarta", "jawa timur",
@@ -378,7 +370,7 @@ if uploaded_file is not None:
     "maluku", "maluku utara",
     "papua", "papua barat", "papua selatan", "papua tengah", "papua pegunungan", "papua barat daya",
 
-    # === Ibu Kota Provinsi ===
+
     "banda aceh", "medan", "padang", "pekanbaru", "tanjungpinang", "jambi", "bengkulu",
     "palembang", "pangkalpinang", "bandar lampung",
     "serang", "jakarta", "bandung", "semarang", "yogyakarta", "surabaya",
@@ -388,19 +380,18 @@ if uploaded_file is not None:
     "ambon", "ternate",
     "jayapura", "manokwari", "merauke", "nabire", "wamena", "fakfak", "sorong", "timika",
 
-    # === Kota/Kabupaten Besar atau Strategis ===
+
     "bekasi", "bogor", "depok", "tangerang", "cirebon", "tegal", "purwokerto", "solo", "magelang",
     "malang", "kediri", "sidoarjo", "pasuruan", "probolinggo", "lumajang", "blitar", "jember",
     "banyuwangi", "cilacap", "padangsidimpuan", "binjai", "sibolga", "lubuklinggau", "palopo",
     "parepare", "bitung", "tomohon", "kotamobagu", "kotabaru", "pangkalan bun", "ketapang",
     "palu", "baubau", "karangasem", "buleleng", "labuan bajo", "ende", "bima", "dompu",
 
-    # === Lokasi Baru / Khusus / Otorita ===
-    "nusantara",  # Ibu kota negara baru di Kaltim
+    "nusantara",  
     "penajam paser utara", "balikpapan", "samarinda", "bontang",  # Kaltim area
     "kepri", "ntb", "ntt", "kaltim", "kalteng", "kalsel", "kalbar", "kaltara",  # singkatan populer
 
-    # === Lokasi Adat/Kultural (yang sering disebut) ===
+
     "minangkabau", "batak", "dayak", "asmat", "ambon", "bugis", "toraja", "sunda", "madura", "tapanuli"
 ]
 
