@@ -229,8 +229,8 @@ if submit and text_input.strip():
     "Sedih": "😢",
     "Marah": "😡",
     "Takut": "😨",
-    "Kecewa": "😞",
-    "Netral": "😐"
+    "Jijik": "🤢",
+    "Cinta": "🥰"  
 }
 
     
